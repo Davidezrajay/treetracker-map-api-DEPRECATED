@@ -58,7 +58,7 @@ app.get('/trees', function (req, res) {
              FROM   ( 
                         SELECT Unnest(St_clusterwithin(estimated_geometric_location, $1)) clustered_locations
                         FROM   trees ` + join + ` 
-                        WHERE  active = true ` + boundingBoxQuery + joinCriteria + ` ) clusters`;
+                        WHERE  active = true ` + boundingBoxQuery + filter + joinCriteria + ` ) clusters`;
     query = {
       text: sql,
       values: [clusterRadius]
