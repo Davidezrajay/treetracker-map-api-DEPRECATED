@@ -18,7 +18,7 @@ const pool = new Pool({
 
 
 app.get('/trees', function (req, res) {
-  console.log(req);
+  //console.log(req);
 
   let token = req.query['token'];
   let organization = req.query['organization'];
@@ -66,6 +66,7 @@ app.get('/trees', function (req, res) {
       && boundingBox[2] >= 36.365024199365735
       && boundingBox[3] >= -4.088867604371135){
 
+      console.log('Using cluster cache');
       sql = `SELECT 'cluster' as type,
              St_asgeojson(location) centroid, count 
              FROM clusters
@@ -77,6 +78,7 @@ app.get('/trees', function (req, res) {
 
     } else {
 
+      console.log('Calculating clusters directly');
       sql = `SELECT 'cluster'                                                   AS type, 
         St_asgeojson(St_centroid(clustered_locations))                 centroid, 
         --St_asgeojson(St_minimumboundingcircle(clustered_locations))    circle, 
