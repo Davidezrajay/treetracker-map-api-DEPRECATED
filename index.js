@@ -60,12 +60,14 @@ app.get('/trees', function (req, res) {
   else {
 
     // check if query is in the cached zone
-    boundingBox = bounds.split(',');
-    optimizedBounds = conn.optimizedBounds.split(',');
-    console.log(boundingBox);
-    console.log(optimizedBounds);
+    if(bounds) {
+      const boundingBox = bounds.split(',');
+      const optimizedBounds = conn.optimizedBounds.split(',');
+      console.log(boundingBox);
+      console.log(optimizedBounds);
+    }
    // 38.34009133803761,-2.5769945571374615,35.94562112319386,-4.088867604371135
-    if( !subset
+    if( bounds && !subset
       && parseFloat(boundingBox[0]) <= parseFloat(optimizedBounds[0])
       && parseFloat(boundingBox[1]) <= parseFloat(optimizedBounds[1])
       && parseFloat(boundingBox[2]) >= parseFloat(optimizedBounds[2])
