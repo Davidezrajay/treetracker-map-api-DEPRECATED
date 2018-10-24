@@ -6,9 +6,8 @@ const pool = new Pool({
 });
 
 
-console.log('hi');
-
-var bounds='36.396335234521985,-4.088867604371135,37.889377226709485,-2.5769945571374615'; //Kilimonjaro area bounds
+//var bounds='39,-2,35,-5'; // Extended bounds
+var bounds = config.optimizedBounds;
 
 var clusterRadius = {
   4:4,
@@ -33,12 +32,13 @@ var clusterRadius = {
 
 (async () => {
 
+  const start = Date.now();
   const client = await pool.connect();
 
   try {
     await client.query('BEGIN');
     var zoomLevel;
-    for(zoomLevel=10; zoomLevel < 17; zoomLevel = zoomLevel + 1){
+    for(zoomLevel=6; zoomLevel < 17; zoomLevel = zoomLevel + 1){
       sql = `SELECT 'cluster' AS type, 
         St_centroid(clustered_locations) centroid, 
         St_numgeometries(clustered_locations) count 
@@ -65,11 +65,17 @@ var clusterRadius = {
       }
     }
     await client.query('COMMIT');
+    console.log('COMMIT');
   } catch (e) {
     await client.query('ROLLBACK');
+    console.log('ROLLBACK');
     throw e
   } finally {
     client.release();
+    const end = Date.now();
+    console.log(start);
+    console.log(end);
+    console.log('DONE');
   }
 
 

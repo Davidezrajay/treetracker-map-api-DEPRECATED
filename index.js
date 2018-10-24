@@ -43,6 +43,7 @@ app.get('/trees', function (req, res) {
   let boundingBoxQuery = '';
   if (bounds) {
     boundingBoxQuery = 'AND trees.estimated_geometric_location && ST_MakeEnvelope(' + bounds + ', 4326) ';
+    console.log(bounds);
   }
 
   let clusterRadius = parseFloat(req.query['clusterRadius']);
@@ -60,11 +61,15 @@ app.get('/trees', function (req, res) {
 
     // check if query is in the cached zone
     boundingBox = bounds.split(',');
-    //37.920688261865735,-2.5769945571374615,36.365024199365735,-4.088867604371135
-    if(boundingBox[0]  <= 37.920688261865735 
-      && boundingBox[1] <= -2.5769945571374615
-      && boundingBox[2] >= 36.365024199365735
-      && boundingBox[3] >= -4.088867604371135){
+    optimizedBounds = conn.optimizedBounds.split(',');
+    console.log(boundingBox);
+    console.log(optimizedBounds);
+   // 38.34009133803761,-2.5769945571374615,35.94562112319386,-4.088867604371135
+    if( !subset
+      && parseFloat(boundingBox[0]) <= parseFloat(optimizedBounds[0])
+      && parseFloat(boundingBox[1]) <= parseFloat(optimizedBounds[1])
+      && parseFloat(boundingBox[2]) >= parseFloat(optimizedBounds[2])
+      && parseFloat(boundingBox[3]) >= parseFloat(optimizedBounds[3])){
 
       console.log('Using cluster cache');
       sql = `SELECT 'cluster' as type,
